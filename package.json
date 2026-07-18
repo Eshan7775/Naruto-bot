@@ -1,13 +1,12 @@
 {
   "name": "naruto-girl-bot",
   "version": "1.0.0",
-  "description": "A powerful Messenger Bot controlled by 𝗢𝗪𝗡𝗘Ｒ 𝗘𝗠𝗢𝗡",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "facebook-chat-api": "^1.8.0",
-    "axios": "^1.6.0"
+    "fca-unofficial": "latest",
+    "axios": "latest"
   }
 }
