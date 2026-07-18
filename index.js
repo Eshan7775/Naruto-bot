@@ -1,4 +1,4 @@
-const login = require("facebook-chat-api");
+const login = require("fca-unofficial");
 const fs = require("fs");
 const axios = require("axios");
 
