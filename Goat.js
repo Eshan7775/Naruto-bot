@@ -29,7 +29,7 @@ if (!appState) {
   process.exit(1);
 }
 
-// Facebook Login using fca-eryxenx
+// Facebook Login
 login({ appState }, (err, api) => {
   if (err) {
     console.error("❌ Facebook Login Failed:", err);
@@ -41,13 +41,29 @@ login({ appState }, (err, api) => {
   api.setOptions({
     listenEvents: true,
     selfListen: false,
-    forceLogin: true
+    forceLogin: true,
+    listenTyping: false
   });
 
+  // Listen to Messenger Events & Messages
   api.listenMqtt((err, event) => {
     if (err) {
       console.error("❌ MQTT Listen Error:", err);
       return;
+    }
+
+    if (event.type === "message" || event.type === "message_reply") {
+      const body = event.body ? event.body.trim() : "";
+      
+      // Auto reply test command /ping
+      if (body.toLowerCase() === "/ping" || body.toLowerCase() === "ping") {
+        api.sendMessage("Pong! 🏓 Naruto Bot is active and working fine!", event.threadID, event.messageID);
+      }
+      
+      // Basic /help command
+      if (body.toLowerCase() === "/help") {
+        api.sendMessage("✨ Naruto Messenger Bot Active!\nAvailable commands:\n- /ping\n- /help", event.threadID, event.messageID);
+      }
     }
   });
 });
