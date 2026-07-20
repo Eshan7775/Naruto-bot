@@ -1,7 +1,10 @@
 const express = require("express");
 const fs = require("fs");
-const login = require("fca-liane-utils");
+const fca = require("fca-liane-utils");
 const goat = require("./Goat");
+
+// Handle module exports safely
+const login = typeof fca === "function" ? fca : (fca.default || fca.login || fca);
 
 const app = express();
 const port = process.env.PORT || 3000;
