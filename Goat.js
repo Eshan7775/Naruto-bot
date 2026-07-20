@@ -2,8 +2,17 @@ const express = require("express");
 const fs = require("fs");
 const fca = require("fca-liane-utils");
 
-// Handle module exports safely for fca-liane-utils
-const login = typeof fca === "function" ? fca : (fca.default || fca.login || fca);
+// Safely extract the login function from fca module
+let login;
+if (typeof fca === "function") {
+  login = fca;
+} else if (fca && typeof fca.login === "function") {
+  login = fca.login;
+} else if (fca && fca.default && typeof fca.default === "function") {
+  login = fca.default;
+} else if (fca && fca.default && typeof fca.default.login === "function") {
+  login = fca.default.login;
+}
 
 function getAppState() {
   if (process.env.APPSTATE) {
@@ -32,6 +41,11 @@ if (!appState) {
   process.exit(1);
 }
 
+if (typeof login !== "function") {
+  console.error("❌ Could not resolve login function from fca-liane-utils!");
+  process.exit(1);
+}
+
 login({ appState }, (err, api) => {
   if (err) {
     console.error("❌ Facebook Login Failed:", err);
@@ -51,6 +65,5 @@ login({ appState }, (err, api) => {
       console.error("❌ MQTT Listen Error:", err);
       return;
     }
-    // Event handler
   });
 });
