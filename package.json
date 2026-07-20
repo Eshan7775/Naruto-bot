@@ -9,7 +9,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "express": "^4.19.2",
-    "fca-liane-utils": "latest"
+    "fb-chat-api": "^10.8.0"
   },
   "engines": {
     "node": "20.x"
