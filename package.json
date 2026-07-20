@@ -1,17 +1,17 @@
 {
-  "name": "naruto-goat-bot",
-  "version": "2.0.0",
-  "description": "Custom GoatBot V2 by OWNER EMON",
+  "name": "naruto-bot",
+  "version": "1.0.0",
+  "description": "Facebook Bot for Railway",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "axios": "^1.6.8",
-    "canvas": "^2.11.2",
+    "axios": "^1.7.2",
     "express": "^4.19.2",
-    "fca-liane-utils": "^1.6.0",
-    "fs-extra": "^11.2.0",
-    "moment-timezone": "^0.5.45"
+    "fca-liane-utils": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
