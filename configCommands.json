@@ -1,0 +1,10 @@
+{
+  "slap": {
+    "enable": true,
+    "role": 0
+  },
+  "kiss": {
+    "enable": true,
+    "role": 0
+  }
+}
