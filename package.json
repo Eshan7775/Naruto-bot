@@ -14,7 +14,7 @@
     "bluebird": "^3.7.2",
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.19.2",
-    "fca-liane-utils": "latest",
+    "fca-project-origo": "latest",
     "fs-extra": "^11.2.0",
     "gradient-string": "^2.0.2",
     "moment-timezone": "^0.5.45"
