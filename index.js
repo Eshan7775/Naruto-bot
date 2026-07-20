@@ -38,8 +38,8 @@ function getBDTime() {
     return new Date().toLocaleTimeString('en-US', options);
 }
 
-login(credentials, (err, api) => {
-    if(err) return console.error(err);
+const loginOptions = { userAgent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Mobile Safari/537.36" };
+login(credentials, loginOptions, (err, api) => {
 
     console.log("Bot successfully logged in and waiting for 𝗢𝗪𝗡𝗘Ｒ 𝗘𝗠𝗢𝗡! 🚀");
 
