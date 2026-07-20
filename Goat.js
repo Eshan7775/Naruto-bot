@@ -42,27 +42,32 @@ login({ appState }, (err, api) => {
     listenEvents: true,
     selfListen: false,
     forceLogin: true,
-    listenTyping: false
+    listenTyping: false,
+    autoMarkDelivery: false,
+    autoMarkRead: false
   });
 
-  // Listen to Messenger Events & Messages
+  // Listen to All Messages
   api.listenMqtt((err, event) => {
     if (err) {
       console.error("❌ MQTT Listen Error:", err);
       return;
     }
 
+    console.log("[ NEW EVENT ] Received event type:", event.type);
+
     if (event.type === "message" || event.type === "message_reply") {
       const body = event.body ? event.body.trim() : "";
+      console.log(`[ MESSAGE RECEIVED ] Content: "${body}" from Thread: ${event.threadID}`);
       
-      // Auto reply test command /ping
+      // Reply to /ping or ping
       if (body.toLowerCase() === "/ping" || body.toLowerCase() === "ping") {
-        api.sendMessage("Pong! 🏓 Naruto Bot is active and working fine!", event.threadID, event.messageID);
+        api.sendMessage("Pong! 🏓 Naruto Bot is working fine in this chat!", event.threadID, event.messageID);
       }
       
-      // Basic /help command
+      // Reply to /help
       if (body.toLowerCase() === "/help") {
-        api.sendMessage("✨ Naruto Messenger Bot Active!\nAvailable commands:\n- /ping\n- /help", event.threadID, event.messageID);
+        api.sendMessage("✨ Naruto Messenger Bot Active!\nCommands:\n- /ping\n- /help", event.threadID, event.messageID);
       }
     }
   });
