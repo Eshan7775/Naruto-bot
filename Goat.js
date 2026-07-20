@@ -1,6 +1,6 @@
 const express = require("express");
 const fs = require("fs");
-const login = require("fca-project-origo");
+const login = require("fca-eryxenx");
 
 function getAppState() {
   if (process.env.APPSTATE) {
@@ -29,7 +29,7 @@ if (!appState) {
   process.exit(1);
 }
 
-// Login using fca-project-origo
+// Facebook Login using fca-eryxenx
 login({ appState }, (err, api) => {
   if (err) {
     console.error("❌ Facebook Login Failed:", err);
