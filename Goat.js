@@ -1,6 +1,9 @@
 const express = require("express");
 const fs = require("fs");
-const login = require("fca-liane-utils");
+const fca = require("fca-liane-utils");
+
+// Handle module exports safely for fca-liane-utils
+const login = typeof fca === "function" ? fca : (fca.default || fca.login || fca);
 
 function getAppState() {
   if (process.env.APPSTATE) {
