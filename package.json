@@ -12,7 +12,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "express": "^4.19.2",
-    "fca-eryxenx": "^1.0.0",
+    "fca-unofficial": "latest",
     "fs-extra": "^11.2.0"
   }
 }
