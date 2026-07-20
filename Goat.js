@@ -1,18 +1,14 @@
-const express = require("express");
 const fs = require("fs");
-const fca = require("fca-liane-utils");
 
-// Safely extract the login function from fca module
-let login;
-if (typeof fca === "function") {
-  login = fca;
-} else if (fca && typeof fca.login === "function") {
-  login = fca.login;
-} else if (fca && fca.default && typeof fca.default === "function") {
-  login = fca.default;
-} else if (fca && fca.default && typeof fca.default.login === "function") {
-  login = fca.default.login;
-}
+// Load FCA module
+const fcaModule = require("fca-liane-utils");
+
+// Resolve the actual login function dynamically
+const login = typeof fcaModule === "function" 
+  ? fcaModule 
+  : (fcaModule && typeof fcaModule.login === "function" 
+      ? fcaModule.login 
+      : (fcaModule && fcaModule.default ? (typeof fcaModule.default === "function" ? fcaModule.default : fcaModule.default.login) : null));
 
 function getAppState() {
   if (process.env.APPSTATE) {
@@ -42,10 +38,11 @@ if (!appState) {
 }
 
 if (typeof login !== "function") {
-  console.error("❌ Could not resolve login function from fca-liane-utils!");
+  console.error("❌ Login function resolution failed. fcaModule contents:", typeof fcaModule, fcaModule);
   process.exit(1);
 }
 
+// Execute Facebook Login
 login({ appState }, (err, api) => {
   if (err) {
     console.error("❌ Facebook Login Failed:", err);
