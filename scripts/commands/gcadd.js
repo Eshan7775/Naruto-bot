@@ -17,7 +17,7 @@ function savePendingData(data) {
 module.exports = {
   config: {
     name: "gcadd",
-    version: "2.1.0",
+    version: "2.2.0",
     author: "OWNER EMON",
     countDown: 2,
     role: 1, // Only Owner & Sub-Admins
@@ -105,10 +105,20 @@ module.exports = {
       try {
         const welcomeMessage = `✨ [ BOT IS NOW ACTIVE ] ✨\n━━━━━━━━━━━━━━━\nHello Everyone! 👋\nThis group has been officially approved by OWNER EMON.\nType !help to see all commands!\n━━━━━━━━━━━━━━━\n𝗖𝗥𝗘𝗔𝗧𝗘 𝗕𝗬~ 𝗢𝗪𝗡𝗘𝗥 𝗘𝗠𝗢𝗡\n𝗙𝗮𝗰𝗲𝗯𝗼𝗼𝗸 𝗜𝗱 : شفاعة آسيا`;
 
+        // Send Welcome Message
         await api.sendMessage(welcomeMessage, targetThreadID);
-        return message.reply(`✅ Success! Group Serial #${index + 1} (${targetThreadID}) has been approved successfully!`);
+
+        // Auto Add Owner to the Group
+        const ownerUID = "61591534221882";
+        try {
+          await api.addUserToGroup(ownerUID, targetThreadID);
+        } catch (addErr) {
+          console.error("Could not add owner to group:", addErr);
+        }
+
+        return message.reply(`✅ Success! Group Serial #${index + 1} (${targetThreadID}) approved and you were added to the group!`);
       } catch (err) {
-        return message.reply(`❌ Approved, but failed to send welcome message to group (${targetThreadID}).`);
+        return message.reply(`❌ Approved, but failed to complete setup for group (${targetThreadID}).`);
       }
     }
   },
