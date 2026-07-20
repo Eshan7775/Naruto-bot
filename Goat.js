@@ -1,27 +1,53 @@
+const express = require("express");
 const fs = require("fs");
-const path = require("path");
+const login = require("fca-liane-utils");
 
-module.exports = function ({ api, event }) {
-  // Check if message is a command
-  const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
-  const prefix = config.prefix || "/";
-
-  if (!event.body || !event.body.startsWith(prefix)) return;
-
-  const args = event.body.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-
-  const commandPath = path.join(__dirname, "scripts", "commands", `${commandName}.js`);
-
-  if (fs.existsSync(commandPath)) {
+function getAppState() {
+  if (process.env.APPSTATE) {
     try {
-      const command = require(commandPath);
-      if (command.onStart) {
-        command.onStart({ api, event, args });
-      }
-    } catch (error) {
-      console.error(`Error executing command ${commandName}:`, error);
-      api.sendMessage(`❌ কমান্ড রান করতে সমস্যা হয়েছে: ${error.message}`, event.threadID, event.messageID);
+      return JSON.parse(process.env.APPSTATE);
+    } catch (e) {
+      console.error("❌ AppState Parsing Error:", e.message);
     }
   }
-};
+  
+  if (fs.existsSync("./account.txt")) {
+    try {
+      return JSON.parse(fs.readFileSync("./account.txt", "utf8"));
+    } catch (e) {
+      console.error("❌ account.txt Parsing Error:", e.message);
+    }
+  }
+  
+  return null;
+}
+
+const appState = getAppState();
+
+if (!appState) {
+  console.error("❌ No valid AppState found in Railway Variables or account.txt!");
+  process.exit(1);
+}
+
+login({ appState }, (err, api) => {
+  if (err) {
+    console.error("❌ Facebook Login Failed:", err);
+    return;
+  }
+
+  console.log("✅ Naruto Bot Successfully Logged in to Facebook!");
+
+  api.setOptions({
+    listenEvents: true,
+    selfListen: false,
+    forceLogin: true
+  });
+
+  api.listenMqtt((err, event) => {
+    if (err) {
+      console.error("❌ MQTT Listen Error:", err);
+      return;
+    }
+    // Event handler
+  });
+});
