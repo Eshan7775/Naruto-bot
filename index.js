@@ -1,44 +1,68 @@
-/**
- * Project: Naruto Goat Bot V2
- * Author: OWNER EMON
- */
-
-const { spawn } = require("child_process");
 const express = require("express");
+const fs = require("fs");
+const login = require("fca-liane-utils");
+const goat = require("./Goat");
 
-// Express Uptime Server
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Server Uptime Health Check
 app.get("/", (req, res) => {
-    res.send("Naruto Goat Bot is running!");
+  res.send("Naruto Bot is Running Online 24/7!");
 });
 
 app.listen(port, () => {
-    console.log(`[ SERVER ] Uptime server running on port ${port}`);
+  console.log(`[ SERVER ] Uptime server running on port ${port}`);
 });
 
-// GoatBot Main Engine Launcher
-function startBot() {
-    const child = spawn("node", ["Goat.js"], {
-        cwd: __dirname,
-        stdio: "inherit",
-        shell: true
-    });
-
-    child.on("close", (code) => {
-        if (code === 2) {
-            console.log("[ SYSTEM ] Restarting Bot...");
-            startBot();
-        } else {
-            console.log(`[ SYSTEM ] Bot stopped with code: ${code}`);
-        }
-    });
-
-    child.on("error", (err) => {
-        console.error("[ ERROR ] Failed to start child process:", err);
-    });
+// AppState / Cookie Loader Function
+function getAppState() {
+  if (process.env.APPSTATE) {
+    try {
+      return JSON.parse(process.env.APPSTATE);
+    } catch (e) {
+      console.error("❌ Failed to parse APPSTATE environment variable:", e.message);
+    }
+  }
+  
+  if (fs.existsSync("./account.txt")) {
+    try {
+      return JSON.parse(fs.readFileSync("./account.txt", "utf8"));
+    } catch (e) {
+      console.error("❌ Failed to parse account.txt:", e.message);
+    }
+  }
+  
+  return null;
 }
 
-// Start Process
-startBot();
+const appState = getAppState();
+
+if (!appState) {
+  console.error("❌ No valid AppState found in Railway Variables or account.txt!");
+  process.exit(1);
+}
+
+// Login to Facebook
+login({ appState }, (err, api) => {
+  if (err) {
+    console.error("❌ Facebook Login Failed:", err);
+    return;
+  }
+
+  console.log("✅ Naruto Bot Successfully Logged in to Facebook!");
+
+  api.setOptions({
+    listenEvents: true,
+    selfListen: false,
+    forceLogin: true
+  });
+
+  api.listenMqtt((err, event) => {
+    if (err) {
+      console.error("❌ MQTT Listen Error:", err);
+      return;
+    }
+    goat({ api, event });
+  });
+});
