@@ -1,12 +1,17 @@
 {
-  "name": "naruto-girl-bot",
-  "version": "1.0.0",
+  "name": "naruto-goat-bot",
+  "version": "2.0.0",
+  "description": "Custom GoatBot V2 by OWNER EMON",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "fca-unofficial": "latest",
-    "axios": "latest"
+    "axios": "^1.6.8",
+    "canvas": "^2.11.2",
+    "express": "^4.19.2",
+    "fca-liane-utils": "^1.6.0",
+    "fs-extra": "^11.2.0",
+    "moment-timezone": "^0.5.45"
   }
 }
