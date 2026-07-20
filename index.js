@@ -1,68 +1,37 @@
-const express = require("express");
-const fs = require("fs");
-const login = require("fb-chat-api");
-const goat = require("./Goat");
+/**
+ * @author NTKhang
+ * ! The source code is written by NTKhang, please don't change the author's name everywhere. Thank you for using
+ * ! Official source code: https://github.com/ntkhang03/Goat-Bot-V2
+ */
+
+const { spawn } = require("child_process");
+const log = require("./logger/log.js");
+const express = require('express');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Server Uptime Health Check
-app.get("/", (req, res) => {
-  res.send("Naruto Bot is Running Online 24/7!");
+app.get('/', (req, res) => {
+  res.send('Naruto Bot is Running Online 24/7!');
 });
 
 app.listen(port, () => {
-  console.log(`[ SERVER ] Uptime server running on port ${port}`);
+  console.log(`Uptime server running on port ${port}`);
 });
 
-// AppState / Cookie Loader Function
-function getAppState() {
-  if (process.env.APPSTATE) {
-    try {
-      return JSON.parse(process.env.APPSTATE);
-    } catch (e) {
-      console.error("❌ Failed to parse APPSTATE environment variable:", e.message);
-    }
-  }
-  
-  if (fs.existsSync("./account.txt")) {
-    try {
-      return JSON.parse(fs.readFileSync("./account.txt", "utf8"));
-    } catch (e) {
-      console.error("❌ Failed to parse account.txt:", e.message);
-    }
-  }
-  
-  return null;
+function startProject() {
+	const child = spawn("node", ["Goat.js"], {
+		cwd: __dirname,
+		stdio: "inherit",
+		shell: true
+	});
+
+	child.on("close", (code) => {
+		if (code == 2) {
+			log.info("Restarting Project...");
+			startProject();
+		}
+	});
 }
 
-const appState = getAppState();
-
-if (!appState) {
-  console.error("❌ No valid AppState found in Railway Variables or account.txt!");
-  process.exit(1);
-}
-
-// Login to Facebook
-login({ appState }, (err, api) => {
-  if (err) {
-    console.error("❌ Facebook Login Failed:", err);
-    return;
-  }
-
-  console.log("✅ Naruto Bot Successfully Logged in to Facebook!");
-
-  api.setOptions({
-    listenEvents: true,
-    selfListen: false,
-    forceLogin: true
-  });
-
-  api.listenMqtt((err, event) => {
-    if (err) {
-      console.error("❌ MQTT Listen Error:", err);
-      return;
-    }
-    goat({ api, event });
-  });
-});
+startProject();
