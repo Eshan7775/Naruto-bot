@@ -1,6 +1,6 @@
 const express = require("express");
 const fs = require("fs");
-const login = require("fca-eryxenx");
+const login = require("fca-unofficial");
 
 function getAppState() {
   if (process.env.APPSTATE) {
@@ -29,43 +29,34 @@ if (!appState) {
   process.exit(1);
 }
 
-// Facebook Login
+// Facebook Login using fca-unofficial
 login({ appState }, (err, api) => {
   if (err) {
     console.error("❌ Facebook Login Failed:", err);
     return;
   }
 
-  console.log("✅ Naruto Bot Successfully Logged in to Facebook!");
+  console.log("✅ Naruto Bot Successfully Logged in via FCA-Unofficial!");
 
   api.setOptions({
     listenEvents: true,
     selfListen: false,
-    forceLogin: true,
-    listenTyping: false,
-    autoMarkDelivery: false,
-    autoMarkRead: false
+    forceLogin: true
   });
 
-  // Listen to All Messages
   api.listenMqtt((err, event) => {
     if (err) {
       console.error("❌ MQTT Listen Error:", err);
       return;
     }
 
-    console.log("[ NEW EVENT ] Received event type:", event.type);
-
     if (event.type === "message" || event.type === "message_reply") {
       const body = event.body ? event.body.trim() : "";
-      console.log(`[ MESSAGE RECEIVED ] Content: "${body}" from Thread: ${event.threadID}`);
       
-      // Reply to /ping or ping
       if (body.toLowerCase() === "/ping" || body.toLowerCase() === "ping") {
-        api.sendMessage("Pong! 🏓 Naruto Bot is working fine in this chat!", event.threadID, event.messageID);
+        api.sendMessage("Pong! 🏓 Naruto Bot is working fine!", event.threadID, event.messageID);
       }
       
-      // Reply to /help
       if (body.toLowerCase() === "/help") {
         api.sendMessage("✨ Naruto Messenger Bot Active!\nCommands:\n- /ping\n- /help", event.threadID, event.messageID);
       }
