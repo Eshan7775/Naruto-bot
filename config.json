@@ -1,13 +1,14 @@
 {
-  "configCommands": {
-    "commandUnlistedGroup": [],
-    "prefix": "!"
-  },
-  "envGlobal": {},
-  "developerMode": false,
+  "language": "en",
+  "prefix": "/",
   "adminBot": [
     "61591534221882"
   ],
-  "nickNameBot": "Naruto Bot",
-  "botName": "Naruto Bot"
+  "subAdminBot": [
+    "SUB_ADMIN_1_UID",
+    "SUB_ADMIN_2_UID"
+  ],
+  "autoApproval": false,
+  "developerMode": false,
+  "allowUserUseSubAdminCommands": false
 }
