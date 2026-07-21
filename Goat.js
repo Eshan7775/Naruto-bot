@@ -1,6 +1,6 @@
 const express = require("express");
 const fs = require("fs");
-const login = require("fca-unofficial");
+const login = require("fca-eryxenx");
 
 function getAppState() {
   if (process.env.APPSTATE) {
@@ -29,19 +29,20 @@ if (!appState) {
   process.exit(1);
 }
 
-// Facebook Login using fca-unofficial
+// Facebook Login
 login({ appState }, (err, api) => {
   if (err) {
     console.error("❌ Facebook Login Failed:", err);
     return;
   }
 
-  console.log("✅ Naruto Bot Successfully Logged in via FCA-Unofficial!");
+  console.log("✅ Naruto Bot Successfully Logged in to Facebook!");
 
   api.setOptions({
     listenEvents: true,
     selfListen: false,
-    forceLogin: true
+    forceLogin: true,
+    listenTyping: false
   });
 
   api.listenMqtt((err, event) => {
